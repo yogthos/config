@@ -17,7 +17,7 @@ and `prod` folders. Each of this will contain a file called `config.edn`.
 
 Next, we will add the dependency and the profiles to our `project.clj`:
 
-```clojure```
+```clojure
 (defproject edn-config-test "0.1.0-SNAPSHOT"
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
