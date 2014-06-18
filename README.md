@@ -50,7 +50,8 @@ For example, if we wanted to package with the `prod` profile then we'd run the f
 lein with-profile prod uberjar
 ```
 
+### Attributions
 
-
+The `edn-config` project is based on [environ](https://github.com/weavejester/environ).
 
 
