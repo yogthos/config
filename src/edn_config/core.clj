@@ -32,6 +32,6 @@
 (defonce ^{:doc "A map of environment variables."}
   env
   (merge
+   (read-config-file)
    (read-system-env)
-   (read-system-props)
-   (read-config-file)))
+   (read-system-props)))
