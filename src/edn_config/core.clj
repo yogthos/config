@@ -26,8 +26,10 @@
        (into {})))
 
 (defn- read-config-file []
-  (with-open [r (-> "config.edn" io/resource io/reader PushbackReader.)]
-    (edn/read r)))
+  (try
+    (with-open [r (-> "config.edn" io/resource io/reader PushbackReader.)]
+    (edn/read r))
+    (catch Exception _)))
 
 (defonce ^{:doc "A map of environment variables."}
   env
