@@ -13,7 +13,7 @@ Include the following dependency in your project.clj file:
 
 ## Usage
 
-The library will look for the `congig.edn` file on the classpath. The contents of this
+The library will look for the `config.edn` file on the classpath. The contents of this
 file will be merged with the environment variables found in `System/getenv` and `System/getProperties`.
 
 Setting up multiple configurations is done by creating Leiningen profiles in `project.clj`. For example,
