@@ -54,4 +54,6 @@ lein with-profile prod uberjar
 
 The `edn-config` project is based on [environ](https://github.com/weavejester/environ).
 
+## License
 
+Distributed under the Eclipse Public License, the same as Clojure.
