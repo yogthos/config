@@ -3,6 +3,13 @@
 
 A library for managing environment variables in Clojure using EDN configuration files.
 
+## Installation
+
+Include the following dependency in your project.clj file:
+
+```clojure
+[edn-config "0.1"]
+```
 
 ## Usage
 
