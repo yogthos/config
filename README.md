@@ -57,6 +57,8 @@ For example, if we wanted to package with the `prod` profile then we'd run the f
 lein with-profile prod uberjar
 ```
 
+The resulting `jar` will contain the config found in `config/prod/config.edn`.
+
 ### Attributions
 
 The `edn-config` project is based on [environ](https://github.com/weavejester/environ).
