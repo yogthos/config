@@ -16,7 +16,7 @@ Include the following dependency in your project.clj file:
 The library will look for the `config.edn` file on the classpath. The contents of this
 file will be merged with the environment variables found in `System/getenv` and `System/getProperties`.
 
-Setting up multiple configurations is done by creating Leiningen profiles in `project.clj`. For example,
+Setting up multiple configurations is done by adding profiles to `project.clj`. For example,
 if we wanted to have a `dev` and a `prod` config we would follow the following steps.
 
 First, we create a `config` folder in the root of the project. Under the `config` we will create `dev`
