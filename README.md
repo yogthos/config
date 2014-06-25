@@ -7,9 +7,7 @@ A library for managing environment variables in Clojure using EDN configuration 
 
 Include the following dependency in your project.clj file:
 
-```clojure
-[edn-config "0.1"]
-```
+[![Clojars Project](http://clojars.org/edn-config/latest-version.svg)](http://clojars.org/edn-config)
 
 ## Usage
 
