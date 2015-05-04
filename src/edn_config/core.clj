@@ -9,6 +9,7 @@
   (try
     (with-open [r (-> "config.edn" io/resource io/reader PushbackReader.)]
     (edn/read r))
-    (catch Exception _)))
+    (catch Exception e
+      (println (str "WARNING: edn-config: " (.getLocalizedMessage e))))))
 
 (defonce env (merge (read-config-file) environ/env))
