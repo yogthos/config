@@ -1,13 +1,20 @@
-## `edn-config`
+## `luminus/config`
 
 
-A library for managing environment variables in Clojure using EDN configuration files.
+A library for managing configuration using environment variables and EDN configuration files.
+
+The configuration is resolved in the following order, the variables found in later configurations will replaces those declared earlier:
+
+1. `config.edn` on the classpath
+2.  `.lein-env` file in the project directory
+3. Environment variables
+4. Java system properties
 
 ## Installation
 
 Include the following dependency in your project.clj file:
 
-[![Clojars Project](http://clojars.org/edn-config/latest-version.svg)](http://clojars.org/edn-config)
+[![Clojars Project](https://img.shields.io/clojars/v/luminus/config.svg)](https://clojars.org/luminus/config)
 
 ## Usage
 
@@ -20,6 +27,12 @@ if we wanted to have a `dev` and a `prod` config we would follow the following s
 First, we create a `config` folder in the root of the project. Under the `config` we will create `dev`
 and `prod` folders. Each of this will contain a file called `config.edn`.
 
+The configuration might look as follows:
+
+```clojure
+{:database-url "jdbc:postgres://localhost/dev"}
+``` 
+
 Next, we will add the dependency and the profiles to our `project.clj`:
 
 ```clojure
@@ -29,7 +42,7 @@ Next, we will add the dependency and the profiles to our `project.clj`:
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [edn-config "0.1.0-SNAPSHOT"]]
+                 [luminus/config "0.1"]]
   :profiles {:prod {:resource-paths ["config/prod"]}
              :dev  {:resource-paths ["config/dev"]}}
   :main edn-config-test.core)
@@ -59,7 +72,7 @@ The resulting `jar` will contain the config found in `config/prod/config.edn`.
 
 ### Attributions
 
-The `edn-config` project is based on [environ](https://github.com/weavejester/environ).
+The `luminus/config` project uses [environ](https://github.com/weavejester/environ) for managing environment variables.
 
 ## License
 

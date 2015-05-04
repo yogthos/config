@@ -1,6 +1,5 @@
-(ns edn-config.core
-  (:require [clojure.string :as str]
-            [clojure.java.io :as io]
+(ns config.core
+  (:require [clojure.java.io :as io]
             [clojure.edn :as edn]
             [environ.core :as environ])
   (:import java.io.PushbackReader))
@@ -9,6 +8,7 @@
   (try
     (with-open [r (-> "config.edn" io/resource io/reader PushbackReader.)]
     (edn/read r))
-    (catch Exception _)))
+    (catch Exception e
+      (println (str "WARNING: failed to parse config.edn: " (.getLocalizedMessage e))))))
 
 (defonce env (merge (read-config-file) environ/env))
