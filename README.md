@@ -3,7 +3,7 @@
 
 A library for managing configuration using environment variables and EDN configuration files.
 
-The configuration is resolved in the following order, the variables found in later configurations will replaces those declared earlier:
+The configuration is resolved in the following order, the variables found in later configurations will replace those declared earlier:
 
 1. `config.edn` on the classpath
 2.  `.lein-env` file in the project directory
