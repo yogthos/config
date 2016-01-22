@@ -6,8 +6,9 @@
 
 (defn- read-config-file []
   (try
-    (with-open [r (-> "config.edn" io/resource io/reader PushbackReader.)]
-    (edn/read r))
+    (when-let [url (io/resource "config.edn")]
+      (with-open [r (-> url io/reader PushbackReader.)]
+        (edn/read r)))
     (catch Exception e
       (println (str "WARNING: failed to parse config.edn: " (.getLocalizedMessage e))))))
 
