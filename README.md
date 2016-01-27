@@ -54,7 +54,7 @@ We can now access the config variables the `config.edn` found under the resource
 
 ```clojure
 (ns edn-config-test.core
-  (:require [edn-config.core :refer [env]])
+  (:require [config.core :refer [env]])
   (:gen-class))
 
 (defn -main []
