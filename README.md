@@ -97,7 +97,7 @@ java -Dconfig="custom-config.edn" -jar target/edn-config-test.jar
 
 ### Attributions
 
-The `luminus/config` project uses [environ](https://github.com/weavejester/environ) for managing environment variables.
+The `luminus/config` project is based on the [environ](https://github.com/weavejester/environ) library.
 
 ## License
 
