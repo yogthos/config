@@ -6,6 +6,7 @@ A library for managing configuration using environment variables and EDN configu
 The configuration is resolved in the following order, the variables found in later configurations will replace those declared earlier:
 
 1. `config.edn` on the classpath
+2. EDN file specified using the `config` envrionment variable
 2.  `.lein-env` file in the project directory
 3. Environment variables
 4. Java system properties
@@ -30,8 +31,8 @@ and `prod` folders. Each of this will contain a file called `config.edn`.
 The configuration might look as follows:
 
 ```clojure
-{:database-url "jdbc:postgres://localhost/dev"}
-``` 
+{:database-url "jdbc:postgres://localhost/prod"}
+```
 
 Next, we will add the dependency and the profiles to our `project.clj`:
 
@@ -58,7 +59,7 @@ We can now access the config variables the `config.edn` found under the resource
   (:gen-class))
 
 (defn -main []
-  (println (:dev env) (:db env)))
+  (println (:db env)))
 ```
 
 The application can be packaged using a specific profile by using the Leiningen `with-profile` option.
@@ -69,6 +70,30 @@ lein with-profile prod uberjar
 ```
 
 The resulting `jar` will contain the config found in `config/prod/config.edn`.
+
+```
+java -jar target/edn-config-test.jar
+=> jdbc:postgres://localhost/prod
+```
+
+
+Additionally, an environment property with the name `config` can be used to specify an external EDN configuration file.
+
+For example, we can create a file called `custom-config.edn` that looks as follows:
+
+
+```clojure
+{:db "jdbc:postgres://localhost/prod-custom"}
+```
+
+Then we can start the app and pass it the `config` environment variable pointing to the location of the file:
+
+```
+java -Dconfig="custom-config.edn" -jar target/edn-config-test.jar
+=> jdbc:postgres://localhost/prod-custom
+```
+
+
 
 ### Attributions
 

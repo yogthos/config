@@ -1,15 +1,54 @@
 (ns config.core
   (:require [clojure.java.io :as io]
             [clojure.edn :as edn]
-            [environ.core :as environ])
+            [clojure.string :as s])
   (:import java.io.PushbackReader))
 
-(defn- read-config-file []
+(defn- keywordize [s]
+  (-> (s/lower-case s)
+      (s/replace "_" "-")
+      (s/replace "." "-")
+      (keyword)))
+
+(defn- sanitize-key [k]
+  (let [s (keywordize (name k))]
+    (if-not (= k s) (println "Warning: environ key" k "has been corrected to" s))
+    s))
+
+(defn- read-system-env []
+  (->> (System/getenv)
+       (map (fn [[k v]] [(keywordize k) v]))
+       (into {})))
+
+(defn- read-system-props []
+  (->> (System/getProperties)
+       (map (fn [[k v]] [(keywordize k) v]))
+       (into {})))
+
+(defn- read-env-file [f]
   (try
-    (when-let [url (io/resource "config.edn")]
+    (when-let [env-file (io/file f)]
+      (when (.exists env-file)
+        (into {} (for [[k v] (edn/read-string (slurp env-file))]
+                   [(sanitize-key k) v]))))
+    (catch Exception e
+      (println (str "WARNING: failed to parse " f " " (.getLocalizedMessage e))))))
+
+(defn- read-config-file [f]
+  (try
+    (when-let [url (io/resource f)]
       (with-open [r (-> url io/reader PushbackReader.)]
         (edn/read r)))
     (catch Exception e
-      (println (str "WARNING: failed to parse config.edn: " (.getLocalizedMessage e))))))
+      (println (str "WARNING: failed to parse " f " " (.getLocalizedMessage e))))))
 
-(defonce env (merge (read-config-file) environ/env))
+(defonce ^{:doc "A map of environment variables."}
+  env
+  (let [env-props (merge (read-system-env) (read-system-props))]
+    (merge
+      (read-config-file "config.edn")
+      (read-env-file (:config env-props))
+      (read-env-file ".lein-env")
+      (read-env-file (io/resource ".boot-env"))
+      env-props)))
+
