@@ -1,12 +1,12 @@
-(ns edn-config.core-test
+(ns config.core-test
   (:require [clojure.test :refer :all]
-            [edn-config.core :as e]))
+            [config.core :as e]))
 
 (defn refresh-ns []
   (ns-unalias *ns* 'e)
   (remove-ns 'edn-config.core)
   (dosync (alter @#'clojure.core/*loaded-libs* disj 'edn-config.core))
-  (require '[edn-config.core :as e]))
+  (require '[config.core :as e]))
 
 (defn refresh-env []
   (eval `(do (refresh-ns) e/env)))

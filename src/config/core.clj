@@ -10,11 +10,6 @@
       (s/replace "." "-")
       (keyword)))
 
-(defn- sanitize-key [k]
-  (let [s (keywordize (name k))]
-    (if-not (= k s) (println "Warning: environ key" k "has been corrected to" s))
-    s))
-
 (defn- read-system-env []
   (->> (System/getenv)
        (map (fn [[k v]] [(keywordize k) v]))
@@ -30,7 +25,7 @@
     (when-let [env-file (io/file f)]
       (when (.exists env-file)
         (into {} (for [[k v] (edn/read-string (slurp env-file))]
-                   [(sanitize-key k) v]))))
+                   [(keywordize k) v]))))
     (catch Exception e
       (println (str "WARNING: failed to parse " f " " (.getLocalizedMessage e))))))
 
