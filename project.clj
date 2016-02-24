@@ -1,4 +1,4 @@
-(defproject luminus/config "0.7"
+(defproject luminus/config "0.8"
   :description "library for managing configuration using environment variables/EDN configuration files"
   :url "https://github.com/luminus-framework/config"
   :license {:name "Eclipse Public License"
