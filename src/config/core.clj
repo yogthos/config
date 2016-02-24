@@ -1,7 +1,8 @@
 (ns config.core
   (:require [clojure.java.io :as io]
             [clojure.edn :as edn]
-            [clojure.string :as s])
+            [clojure.string :as s]
+            [clojure.tools.logging :as log])
   (:import java.io.PushbackReader))
 
 (defn- keywordize [s]
@@ -27,7 +28,7 @@
         (into {} (for [[k v] (edn/read-string (slurp env-file))]
                    [(keywordize k) v]))))
     (catch Exception e
-      (println (str "WARNING: failed to parse " f " " (.getLocalizedMessage e))))))
+      (log/warn (str "WARNING: failed to parse " f " " (.getLocalizedMessage e))))))
 
 (defn- read-config-file [f]
   (try
@@ -35,7 +36,7 @@
       (with-open [r (-> url io/reader PushbackReader.)]
         (edn/read r)))
     (catch Exception e
-      (println (str "WARNING: failed to parse " f " " (.getLocalizedMessage e))))))
+      (log/warn (str "WARNING: failed to parse " f " " (.getLocalizedMessage e))))))
 
 (defonce ^{:doc "A map of environment variables."}
   env
