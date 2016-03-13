@@ -1,6 +1,6 @@
 ## `luminus/config`
 
-### this library is not actively developed, Luminus has moved to using the [cprop](https://github.com/tolitius/cprop/tree/master/src/cprop) library for configuration management.
+### this library is not actively developed, Luminus has moved to using the [cprop](https://github.com/tolitius/cprop/tree/master/src/cprop) library for configuration management
 
 A library for managing configuration using environment variables and EDN configuration files.
 
