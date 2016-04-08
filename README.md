@@ -1,6 +1,4 @@
-## `luminus/config`
-
-### this library is not actively developed, Luminus has moved to using the [cprop](https://github.com/tolitius/cprop/tree/master/src/cprop) library for configuration management
+## `yogthos/config`
 
 A library for managing configuration using environment variables and EDN configuration files.
 
@@ -14,9 +12,9 @@ The configuration is resolved in the following order, the variables found in lat
 
 ## Installation
 
-Include the following dependency in your project.clj file:
+Include the following dependency in your `project.clj` file:
 
-[![Clojars Project](https://img.shields.io/clojars/v/luminus/config.svg)](https://clojars.org/luminus/config)
+[![Clojars Project](https://img.shields.io/clojars/v/yogthos/config.svg)](https://clojars.org/yogthos/config)
 
 ## Usage
 
@@ -43,8 +41,8 @@ Next, we will add the dependency and the profiles to our `project.clj`:
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[org.clojure/clojure "1.6.0"]
-                 [luminus/config "0.1"]]
+  :dependencies [[org.clojure/clojure "1.8.0"]
+                 [yogthos/config "0.8"]]
   :profiles {:prod {:resource-paths ["config/prod"]}
              :dev  {:resource-paths ["config/dev"]}}
   :main edn-config-test.core)
@@ -98,7 +96,7 @@ java -Dconfig="custom-config.edn" -jar target/edn-config-test.jar
 
 ### Attributions
 
-The `luminus/config` project is based on the [environ](https://github.com/weavejester/environ) library.
+The `yogthos/config` project is based on the [environ](https://github.com/weavejester/environ) library.
 
 ## License
 
