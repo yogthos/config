@@ -46,10 +46,9 @@
 (defonce ^{:doc "A map of environment variables."}
   env
   (let [env-props (merge (read-system-env) (read-system-props))]
-    (merge
-      (read-config-file "config.edn")
-      (read-env-file (:config env-props))
-      (read-env-file ".lein-env")
-      (read-env-file (io/resource ".boot-env"))
-      env-props)))
+    (merge env-props
+           (read-env-file (:config env-props))
+           (read-env-file ".lein-env")
+           (read-env-file (io/resource ".boot-env"))
+           (read-config-file "config.edn"))))
 
