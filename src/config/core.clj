@@ -43,13 +43,45 @@
     (catch Exception e
       (log/warn (str "WARNING: failed to parse " f " " (.getLocalizedMessage e))))))
 
-(defonce ^{:doc "A map of environment variables."}
-  env
-  (let [env-props (merge (read-system-env) (read-system-props))]
-    (merge
-      (read-config-file "config.edn")
-      (read-env-file (:config env-props))
+(defn contains-in?
+  "checks whether the nested key exists in a map"
+  [m k-path]
+  (let [one-before (get-in m (drop-last k-path))]
+    (when (map? one-before)                        ;; in case k-path is "longer" than a map: {:a {:b {:c 42}}} => [:a :b :c :d]
+      (contains? one-before (last k-path)))))
+
+;; author of "deep-merge-with" is Chris Chouser: https://github.com/clojure/clojure-contrib/commit/19613025d233b5f445b1dd3460c4128f39218741
+(defn deep-merge-with
+  "Like merge-with, but merges maps recursively, appling the given fn
+  only when there's a non-map at a particular level.
+  (deepmerge + {:a {:b {:c 1 :d {:x 1 :y 2}} :e 3} :f 4}
+               {:a {:b {:c 2 :d {:z 9} :z 3} :e 100}})
+  -> {:a {:b {:z 3, :c 3, :d {:z 9, :x 1, :y 2}}, :e 103}, :f 4}"
+  [f & maps]
+  (apply
+    (fn m [& maps]
+      (if (every? map? maps)
+        (apply merge-with m maps)
+        (apply f maps)))
+    (remove nil? maps)))
+
+(defn merge-maps [& m]
+  (reduce #(deep-merge-with (fn [_ v] v) %1 %2) m))
+
+(defn load-env
+  "Generate a map of environment variables."
+  [& configs]
+  (let [env-props (merge-maps (read-system-env) (read-system-props))]
+    (apply
+      merge-maps
       (read-env-file ".lein-env")
       (read-env-file (io/resource ".boot-env"))
-      env-props)))
+      (read-config-file "config.edn")
+      (read-env-file (:config env-props))
+      env-props
+      configs)))
+
+(defonce
+  ^{:doc "A map of environment variables."}
+  env (load-env))
 

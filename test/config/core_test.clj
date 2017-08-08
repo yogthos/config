@@ -2,23 +2,15 @@
   (:require [clojure.test :refer :all]
             [config.core :as e]))
 
-(defn refresh-ns []
-  (ns-unalias *ns* 'e)
-  (remove-ns 'edn-config.core)
-  (dosync (alter @#'clojure.core/*loaded-libs* disj 'edn-config.core))
-  (require '[config.core :as e]))
-
-(defn refresh-env []
-  (eval `(do (refresh-ns) e/env)))
-
 (deftest test-env
   (testing "env variables"
-    (is (= (:user e/env) (System/getenv "USER")))
-    (is (= (:java-arch e/env) (System/getenv "JAVA_ARCH"))))
+    (is (= (System/getenv "USER") (:user (e/load-env))))
+    (is (= (System/getenv "JAVA_ARCH") (:java-arch (e/load-env)))))
   (testing "system properties"
-    (is (= (:user-name e/env) (System/getProperty "user.name")))
-    (is (= (:user-country e/env) (System/getProperty "user.country"))))
+    (is (= (System/getProperty "user.name") (:user-name (e/load-env))))
+    (is (= (System/getProperty "user.country") (:user-country (e/load-env)))))
   (testing "env file"
     (spit "test/config.edn" (prn-str {:foo "bar"}))
-    (let [env (refresh-env)]
-      (is (= (:foo env) "bar")))))
+    (is (= "bar" (:foo (e/load-env)))))
+  (testing "custom config"
+    (is (= "custom prop" (:custom-prop (e/load-env {:custom-prop "custom prop"}))))))
