@@ -30,7 +30,7 @@ and `prod` folders. Each of this will contain a file called `config.edn`.
 The configuration might look as follows:
 
 ```clojure
-{:database-url "jdbc:postgres://localhost/prod"}
+{:db "jdbc:postgres://localhost/prod"}
 ```
 
 Next, we will add the dependency and the profiles to our `project.clj`:
