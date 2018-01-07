@@ -14,3 +14,26 @@
     (is (= "bar" (:foo (e/load-env)))))
   (testing "custom config"
     (is (= "custom prop" (:custom-prop (e/load-env {:custom-prop "custom prop"}))))))
+
+(deftest edn-test
+  (let [props {"BOOL"          "true"
+               "text"          "\"true\""
+               "number"        "15"
+               "quoted-number" "\"12\""
+               "unparsed.text" "some text here"
+               "edn_string"    "{:foo :bar :baz [1 2 \"foo\"]}"}]
+    (doseq [[k v] props] (System/setProperty k v))
+    (is
+      (= {:bool          true,
+          :text          "true",
+          :number        15,
+          :quoted-number "12",
+          :edn-string    {:foo :bar, :baz [1 2 "foo"]},
+          :unparsed-text "some text here"}
+         (select-keys (e/load-env)
+                      [:bool
+                       :text
+                       :number
+                       :quoted-number
+                       :edn-string
+                       :unparsed-text])))))

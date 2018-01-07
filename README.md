@@ -10,6 +10,40 @@ The configuration is resolved in the following order, the variables found in lat
 3. Environment variables
 4. Java system properties
 
+The library parses configuration keys into Clojure keywords with names lowercased, then `_` and `.` characters converted to dashes, e.g:
+
+* `foo_bar` -> `foo-bar`
+* `Foo_bar` -> `foo-bar`
+* `Foo.BAR` -> `foo-bar`
+
+The values are parsed using the following strategy:
+
+1. `[0-9]+` -> number
+2. `^(true|false)$` -> boolean
+3. `\w+` -> string
+4. try parse as EDN, and return the original value as the default
+
+following environment variables:
+
+```bash
+* BOOL=true
+* text="true"
+* number=15
+* quoted-number="12"
+* edn_string="{:foo :bar :baz [1 2 \"foo\"]}"
+* unparsed.text="some text here"
+```
+
+are translated as:
+
+``` clojure
+* :bool          true,
+* :text          "true",
+* :number        15,
+* :quoted-number "12",
+* :edn-string    {:foo :bar, :baz [1 2 "foo"]},
+* :unparsed-text "some text here"
+```
 ## Installation
 
 Include the following dependency in your `project.clj` file:
@@ -50,7 +84,7 @@ Next, we will add the dependency and the profiles to our `project.clj`:
 ```
 
 We can now access the config variables the `config.edn` found under the resource path specified in the profile.
-
+There are two ways of doing this. We can load a version of config defined as `config.core/env`:
 
 ```clojure
 (ns edn-config-test.core
@@ -61,8 +95,24 @@ We can now access the config variables the `config.edn` found under the resource
   (println (:db env)))
 ```
 
-The application can be packaged using a specific profile by using the Leiningen `with-profile` option.
-For example, if we wanted to package with the `prod` profile then we'd run the following:
+Alternatively, we can call the `config.core/load-env` explicitly to mange the state of the config in the app.
+For example, if we use the [mount](https://github.com/tolitius/mount) library, we could write the following:
+
+```Clojure
+(ns edn-config-test.core
+  (:require [mount.core :refer [defstate]]
+            [config.core :refer [load-env]])
+  (:gen-class))
+
+(defstate env
+  :start (load-env))
+
+  (defn -main []
+    (mount.core/start)
+    (println (:db env)))    
+```
+
+The application can be packaged using a specific profile by using the Leiningen `with-profile` option. For example, if we wanted to package with the `prod` profile then we'd run the following:
 
 ```
 lein with-profile prod uberjar
@@ -91,8 +141,6 @@ Then we can start the app and pass it the `config` environment variable pointing
 java -Dconfig="custom-config.edn" -jar target/edn-config-test.jar
 => jdbc:postgres://localhost/prod-custom
 ```
-
-
 
 ### Attributions
 
