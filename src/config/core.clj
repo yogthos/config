@@ -6,10 +6,11 @@
   (:import java.io.PushbackReader))
 
 ;originally found in cprop https://github.com/tolitius/cprop/blob/6963f8e04fd093744555f990c93747e0e5889395/src/cprop/source.cljc#L26
-(defn- str->value [v]
+(defn- str->value
   "ENV vars and system properties are strings. str->value will convert:
    the numbers to longs, the alphanumeric values to strings, and will use Clojure reader for the rest
    in case reader can't read OR it reads a symbol, the value will be returned as is (a string)"
+  [v]
   (cond
     (re-matches #"[0-9]+" v) (Long/parseLong v)
     (re-matches #"^(true|false)$" v) (Boolean/parseBoolean v)
