@@ -100,3 +100,6 @@
 (defonce
   ^{:doc "A map of environment variables."}
   env (load-env))
+
+(defn reload-env []
+  (alter-var-root #'env (fn [_] (load-env))))
