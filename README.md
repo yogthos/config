@@ -95,6 +95,8 @@ There are two ways of doing this. We can load a version of config defined as `co
   (println (:db env)))
 ```
 
+The config in `env` can be reloaded at runtime by calling the `reload-env` function.
+
 Alternatively, we can call the `config.core/load-env` explicitly to mange the state of the config in the app.
 For example, if we use the [mount](https://github.com/tolitius/mount) library, we could write the following:
 
