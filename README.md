@@ -5,10 +5,11 @@ A library for managing configuration using environment variables and EDN configu
 The configuration is resolved in the following order, the variables found in later configurations will replace those declared earlier:
 
 1. `config.edn` on the classpath
-2. EDN file specified using the `config` envrionment variable
-2.  `.lein-env` file in the project directory
-3. Environment variables
-4. Java system properties
+2. `.lein-env` file in the project directory
+3. `.boot-env` file in the project directory
+4. EDN file specified using the `config` environment variable
+5. Environment variables
+6. Java System properties
 
 The library parses configuration keys into Clojure keywords with names lowercased, then `_` and `.` characters converted to dashes, e.g:
 

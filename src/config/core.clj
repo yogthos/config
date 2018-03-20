@@ -90,9 +90,9 @@
   (let [env-props (merge-maps (read-system-env) (read-system-props))]
     (apply
       merge-maps
+      (read-config-file "config.edn")
       (read-env-file ".lein-env")
       (read-env-file (io/resource ".boot-env"))
-      (read-config-file "config.edn")
       (read-env-file (:config env-props))
       env-props
       configs)))
