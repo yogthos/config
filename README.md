@@ -77,7 +77,7 @@ Next, we will add the dependency and the profiles to our `project.clj`:
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [yogthos/config "0.8"]]
+                 [yogthos/config "1.1.1"]]
   :profiles {:prod {:resource-paths ["config/prod"]}
              :dev  {:resource-paths ["config/dev"]}}
   :main edn-config-test.core)
@@ -98,7 +98,7 @@ There are two ways of doing this. We can load a version of config defined as `co
 
 The config in `env` can be reloaded at runtime by calling the `reload-env` function.
 
-Alternatively, we can call the `config.core/load-env` explicitly to mange the state of the config in the app.
+Alternatively, we can call the `config.core/load-env` explicitly to manage the state of the config in the app.
 For example, if we use the [mount](https://github.com/tolitius/mount) library, we could write the following:
 
 ```Clojure
