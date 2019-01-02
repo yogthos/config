@@ -53,19 +53,44 @@ Include the following dependency in your `project.clj` file:
 
 ## Usage
 
-The library will look for the `config.edn` file on the classpath. The contents of this
-file will be merged with the environment variables found in `System/getenv` and `System/getProperties`.
+### external configuration
 
-Setting up multiple configurations is done by adding profiles to `project.clj`. For example,
-if we wanted to have a `dev` and a `prod` config we would follow the following steps.
-
-First, we create a `config` folder in the root of the project. Under the `config` we will create `dev`
-and `prod` folders. Each of this will contain a file called `config.edn`.
-
-The configuration might look as follows:
+In most cases you'll likely want to specify the configuration file using the `config` environment variable.
+We will add the dependency to our `project.clj` file and specify the configuration file location using `:jvm-opts`:
 
 ```clojure
-{:db "jdbc:postgres://localhost/prod"}
+(defproject edn-config-test "0.1.0-SNAPSHOT"
+  :description "FIXME: write description"
+  :url "http://example.com/FIXME"
+  :license {:name "Eclipse Public License"
+            :url "http://www.eclipse.org/legal/epl-v10.html"}
+  :dependencies [[org.clojure/clojure "1.10.0"]
+                 [yogthos/config <VERSION>]]
+  ;; configuration will be read from the dev-config.edn file               
+  :jvm-opts ["-Dconf=dev-config.edn"]               
+  :main edn-config-test.core)
+
+```
+
+### embedded configuration
+
+In some cases you may wish to package configuration in the jar along with the application. In this case the `config.edn` file must be present on the classpath.
+
+Let's take a look at setting up separate configurations for development and production by adding profiles to `project.clj`. We'll create `dev` and `prod` profiles each pointing to a different resource path containing the desired configuration.
+
+First, we'll need to create a `config` folder in the root of the project. Under the `config` we will create `dev`
+and `prod` folders. Each of this will contain a file called `config.edn`.
+
+We'll create a development configuration in `config/dev/config.edn`:
+
+```clojure
+{:db "jdbc:sqlite:dev.db"}
+```
+
+and a production configuration in `config/prod/config.edn`:
+
+```clojure
+{:db "jdbc:sqlite:prod.db"}
 ```
 
 Next, we will add the dependency and the profiles to our `project.clj`:
@@ -76,13 +101,15 @@ Next, we will add the dependency and the profiles to our `project.clj`:
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[org.clojure/clojure "1.8.0"]
-                 [yogthos/config "1.1.1"]]
+  :dependencies [[org.clojure/clojure "1.10.0"]
+                 [yogthos/config <VERSION>]]
   :profiles {:prod {:resource-paths ["config/prod"]}
              :dev  {:resource-paths ["config/dev"]}}
   :main edn-config-test.core)
 
 ```
+
+## Accessing the configuration
 
 We can now access the config variables the `config.edn` found under the resource path specified in the profile.
 There are two ways of doing this. We can load a version of config defined as `config.core/env`:
@@ -115,34 +142,34 @@ For example, if we use the [mount](https://github.com/tolitius/mount) library, w
     (println (:db env)))    
 ```
 
+## Packaging for release
+
 The application can be packaged using a specific profile by using the Leiningen `with-profile` option. For example, if we wanted to package with the `prod` profile then we'd run the following:
 
 ```
 lein with-profile prod uberjar
 ```
 
-The resulting `jar` will contain the config found in `config/prod/config.edn`.
+The resulting `jar` will contain the config found in `config/prod/config.edn` in case an embedded configuration was used:
 
 ```
 java -jar target/edn-config-test.jar
-=> jdbc:postgres://localhost/prod
+=> jdbc:sqlite:prod.db
 ```
 
 
-Additionally, an environment property with the name `config` can be used to specify an external EDN configuration file.
-
-For example, we can create a file called `custom-config.edn` that looks as follows:
+Alternatively, we can create a file called `custom-config.edn` that looks as follows:
 
 
 ```clojure
-{:db "jdbc:postgres://localhost/prod-custom"}
+{:db "jdbc:sqlite:prod-custom.db"}
 ```
 
 Then we can start the app and pass it the `config` environment variable pointing to the location of the file:
 
 ```
 java -Dconfig="custom-config.edn" -jar target/edn-config-test.jar
-=> jdbc:postgres://localhost/prod-custom
+=> jdbc:sqlite:prod-custom.db
 ```
 
 ### Attributions
