@@ -53,7 +53,7 @@
 
 (defn- read-config-file [f]
   (try
-    (when-let [url (io/resource f)]
+    (when-let [url (or (io/resource f) (io/file f))]
       (with-open [r (-> url io/reader PushbackReader.)]
         (edn/read r)))
     (catch Exception e
