@@ -5,6 +5,12 @@
             [clojure.tools.logging :as log])
   (:import java.io.PushbackReader))
 
+(defn- parse-number [v]
+  (try
+    (Long/parseLong v)
+    (catch NumberFormatException _
+      (BigInteger. v))))
+
 ;originally found in cprop https://github.com/tolitius/cprop/blob/6963f8e04fd093744555f990c93747e0e5889395/src/cprop/source.cljc#L26
 (defn- str->value
   "ENV vars and system properties are strings. str->value will convert:
@@ -12,7 +18,7 @@
    in case reader can't read OR it reads a symbol, the value will be returned as is (a string)"
   [v]
   (cond
-    (re-matches #"[0-9]+" v) (Long/parseLong v)
+    (re-matches #"[0-9]+" v) (parse-number v)
     (re-matches #"^(true|false)$" v) (Boolean/parseBoolean v)
     (re-matches #"\w+" v) v
     :else

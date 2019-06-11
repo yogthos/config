@@ -15,6 +15,10 @@
   (testing "custom config"
     (is (= "custom prop" (:custom-prop (e/load-env {:custom-prop "custom prop"}))))))
 
+(deftest number-test
+  (System/setProperty "bignum" "112473406068224456955")
+  (is (= 112473406068224456955 (:bignum (e/load-env)))))
+
 (deftest edn-test
   (let [props {"BOOL"          "true"
                "text"          "\"true\""
