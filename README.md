@@ -67,7 +67,7 @@ We will add the dependency to our `project.clj` file and specify the configurati
   :dependencies [[org.clojure/clojure "1.10.0"]
                  [yogthos/config <VERSION>]]
   ;; configuration will be read from the dev-config.edn file               
-  :jvm-opts ["-Dconf=dev-config.edn"]               
+  :jvm-opts ["-Dconfig=dev-config.edn"]               
   :main edn-config-test.core)
 
 ```
