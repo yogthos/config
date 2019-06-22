@@ -5,14 +5,14 @@
             [clojure.tools.logging :as log])
   (:import java.io.PushbackReader))
 
-(defn- parse-number [v]
+(defn parse-number [v]
   (try
     (Long/parseLong v)
     (catch NumberFormatException _
       (BigInteger. v))))
 
 ;originally found in cprop https://github.com/tolitius/cprop/blob/6963f8e04fd093744555f990c93747e0e5889395/src/cprop/source.cljc#L26
-(defn- str->value
+(defn str->value
   "ENV vars and system properties are strings. str->value will convert:
    the numbers to longs, the alphanumeric values to strings, and will use Clojure reader for the rest
    in case reader can't read OR it reads a symbol, the value will be returned as is (a string)"
@@ -27,28 +27,28 @@
         (if (symbol? parsed) v parsed))
       (catch Throwable _ v))))
 
-(defn- keywordize [s]
+(defn keywordize [s]
   (-> (s/lower-case s)
       (s/replace "_" "-")
       (s/replace "." "-")
       (keyword)))
 
-(defn- sanitize-key [k]
+(defn sanitize-key [k]
   (let [s (keywordize (name k))]
     (if-not (= k s) (println "Warning: config key" k "has been corrected to" s))
     s))
 
-(defn- read-system-env []
+(defn read-system-env []
   (->> (System/getenv)
        (map (fn [[k v]] [(keywordize k) (str->value v)]))
        (into {})))
 
-(defn- read-system-props []
+(defn read-system-props []
   (->> (System/getProperties)
        (map (fn [[k v]] [(keywordize k) (str->value v)]))
        (into {})))
 
-(defn- read-env-file [f]
+(defn read-env-file [f]
   (try
     (when-let [env-file (io/file f)]
       (when (.exists env-file)
@@ -57,7 +57,7 @@
     (catch Exception e
       (log/warn (str "WARNING: failed to parse " f " " (.getLocalizedMessage e))))))
 
-(defn- read-config-file [f]
+(defn read-config-file [f]
   (try
     (when-let [url (or (io/resource f) (io/file f))]
       (with-open [r (-> url io/reader PushbackReader.)]
