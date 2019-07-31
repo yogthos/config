@@ -62,8 +62,9 @@
     (when-let [url (or (io/resource f) (io/file f))]
       (with-open [r (-> url io/reader PushbackReader.)]
         (edn/read r)))
+    (catch java.io.FileNotFoundException _)
     (catch Exception e
-      (log/warn (str "WARNING: failed to parse " f " " (.getLocalizedMessage e))))))
+      (log/warn (str "failed to parse " f " " (.getLocalizedMessage e))))))
 
 (defn contains-in?
   "checks whether the nested key exists in a map"
