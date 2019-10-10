@@ -52,8 +52,7 @@
   (try
     (when-let [env-file (io/file f)]
       (when (.exists env-file)
-        (into {} (for [[k v] (edn/read-string (slurp env-file))]
-                   [(sanitize-key k) v]))))
+        (edn/read-string (slurp env-file))))
     (catch Exception e
       (log/warn (str "WARNING: failed to parse " f " " (.getLocalizedMessage e))))))
 
