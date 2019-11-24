@@ -5,7 +5,7 @@
             [clojure.tools.logging :as log])
   (:import java.io.PushbackReader))
 
-(defn parse-number [v]
+(defn parse-number [^String v]
   (try
     (Long/parseLong v)
     (catch NumberFormatException _
