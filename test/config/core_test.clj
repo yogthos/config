@@ -22,22 +22,25 @@
 (deftest edn-test
   (let [props {"BOOL"          "true"
                "text"          "\"true\""
+               "db__spec"      "{:conn \"foo\"}"
                "number"        "15"
                "quoted-number" "\"12\""
                "unparsed.text" "some text here"
                "edn_string"    "{:foo :bar :baz [1 2 \"foo\"]}"}]
     (doseq [[k v] props] (System/setProperty k v))
     (is
-      (= {:bool          true,
-          :text          "true",
-          :number        15,
-          :quoted-number "12",
-          :edn-string    {:foo :bar, :baz [1 2 "foo"]},
+      (= {:bool          true
+          :text          "true"
+          :number        15
+          :quoted-number "12"
+          :db/spec       {:conn "foo"}
+          :edn-string    {:foo :bar, :baz [1 2 "foo"]}
           :unparsed-text "some text here"}
          (select-keys (e/load-env)
                       [:bool
                        :text
                        :number
                        :quoted-number
+                       :db/spec
                        :edn-string
                        :unparsed-text])))))

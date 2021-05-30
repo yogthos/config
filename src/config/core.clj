@@ -29,6 +29,7 @@
 
 (defn keywordize [s]
   (-> (s/lower-case s)
+      (s/replace "__" "/")
       (s/replace "_" "-")
       (s/replace "." "-")
       (keyword)))

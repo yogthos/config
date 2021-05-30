@@ -1,4 +1,4 @@
-(defproject yogthos/config "1.1.7"
+(defproject yogthos/config "1.1.8"
   :description "library for managing configuration using environment variables/EDN configuration files"
   :url "https://github.com/yogthos/config"
   :license {:name "Eclipse Public License"
