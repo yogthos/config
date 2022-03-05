@@ -1,8 +1,7 @@
 (ns config.core
   (:require [clojure.java.io :as io]
             [clojure.edn :as edn]
-            [clojure.string :as s]
-            [clojure.tools.logging :as log])
+            [clojure.string :as s])
   (:import java.io.PushbackReader))
 
 (defn parse-number [^String v]
@@ -44,22 +43,17 @@
        (map (fn [[k v]] [(keywordize k) (str->value v)]))
        (into {})))
 
-(defn read-env-file [f]
-  (try
-    (when-let [env-file (io/file f)]
-      (when (.exists env-file)
-        (edn/read-string (slurp env-file))))
-    (catch Exception e
-      (log/warn (str "WARNING: failed to parse " f " " (.getLocalizedMessage e))))))
+(defn read-env-file [f & required]
+  (when-let [env-file (io/file f)]
+    (when (or (.exists env-file) required)
+      (edn/read-string (slurp env-file)))))
 
 (defn read-config-file [f]
   (try
     (when-let [url (or (io/resource f) (io/file f))]
       (with-open [r (-> url io/reader PushbackReader.)]
         (edn/read r)))
-    (catch java.io.FileNotFoundException _)
-    (catch Exception e
-      (log/warn (str "failed to parse " f " " (.getLocalizedMessage e))))))
+    (catch java.io.FileNotFoundException _)))
 
 (defn contains-in?
   "checks whether the nested key exists in a map"
@@ -95,7 +89,8 @@
       (read-config-file "config.edn")
       (read-env-file ".lein-env")
       (read-env-file (io/resource ".boot-env"))
-      (read-env-file (:config env-props))
+      (when (:config env-props)
+        (read-env-file (:config env-props) true))
       env-props
       configs)))
 
